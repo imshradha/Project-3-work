@@ -2,23 +2,27 @@ const userModel = require("../Models/userModel");
 const jwt = require("jsonwebtoken");
 const Validator = require("../Validator/valid")
 
+/************************************************ Create User data ************************************************** */
 const User = async function (req, res) {
     try{
         let data1 = req.body
 
-        let {title, name, phone, email, password, address} = data1
+        let {title, name, phone, email, password} = data1
 
         if(Object.keys(data1).length == 0){return res.status(400).send({status:false,msg:"NO data provide!!"})}
         
         if(!Validator.isValid(title)){
             return res.status(400).send({status: false,message: "Title is Required"});
         }
+        if(!/^[A-Za-z ]+$/.test(title)) {
+           return res.status(400).send({status: false, message: "Invalid title"});
+        }
         if(!Validator.isValid(name)){
             return res.status(400).send({status: false,message: "Name is Required"});
         }
         //check name is valid or not 
         if(!/^[A-Za-z ]+$/.test(name)) {
-            res.status(400).send({status: false, message: "Invalid name"});
+           return res.status(400).send({status: false, message: "Invalid name"});
         }
         if(!Validator.isValid(phone)){
             return res.status(400).send({status: false,message: "Phone is Required"});
@@ -59,9 +63,6 @@ const User = async function (req, res) {
             return res.status(400).send({ status: false, message: "Invalid password"});
         }
 
-        if(!address){
-            return res.status(400).send({status: false, message: "Address is Required"});
-        }
         let data = await userModel.create(data1);
         return res.status(201).send({ status: true, data: data});
     }
@@ -71,7 +72,7 @@ const User = async function (req, res) {
 };
 module.exports.User = User;
 
-/**************************************Login*************************************** */
+/**************************************** Login user ******************************************/
 
 const Login =async function(req,res){
     try{
