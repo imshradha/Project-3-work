@@ -16,12 +16,6 @@ const isValidPassword = function(value){
     else return false
 }
 
-<<<<<<< HEAD
-const isValidObjectId= function(value){
-    if(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/.test(value)==true) {return true}
-    else return false
-}
-=======
 function isValidObjectId(id){
      
     if(ObjectId.isValid(id)){
@@ -32,5 +26,4 @@ function isValidObjectId(id){
     return false;
 }
  
->>>>>>> 93100861009faa47dda708cdbc8177d35f6ed364
 module.exports = {isValid , isValidEmail , isValidPassword, isValidObjectId}

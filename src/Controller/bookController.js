@@ -21,16 +21,10 @@ const Book = async function (req, res) {
          //check excerpt is valid or not
         if(!Validator.isValid(excerpt)) return res.status(400).send({status: false,message: "Excerpt is Required"});
 
-<<<<<<< HEAD
-        // //check userId is valid or not
-        // if(!Validator.isValid(userId)) return res.status(400).send({status: false,message: "userId is Required"});
-        // if(Validator.isValidObjectId(userId))  return res.status(400).send({status: false,message: "userId is Required"});
-=======
         //check userId is valid or not
         if(!Validator.isValid(userId)) return res.status(400).send({status: false,message: "userId is Required"});
         if(!Validator.isValidObjectId(userId))  return res.status(400).send({status: false,message: "userId is invalid"});
        
->>>>>>> 93100861009faa47dda708cdbc8177d35f6ed364
 
         //check ISBN is valid or not
         if(!Validator.isValid(ISBN)) return res.status(400).send({status: false,message: "ISBN is Required"});
@@ -63,7 +57,7 @@ const getBooks = async function(req, res) {
         const book = await bookModel.find({ $and: [{ isDeleted: false }, query] }).sort({title:1}).populate('userId');
         if(book.length == 0) return res.status(404).send({status: false, message: "Book not found"})
 
-        return res.status(200).send({status: true, message: book})
+        return res.status(200).send({status: true, message: "Success", data: book})
         
 
     }catch(error){
