@@ -8,7 +8,7 @@ router.post('/register', userController.User)
 
 router.post("/login",userController.Login)
 
-router.post('/books',Authentication, bookController.Book)
+router.post('/books',Authentication,Authrization, bookController.Book)
 
 
 module.exports = router;

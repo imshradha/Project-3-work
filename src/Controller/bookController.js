@@ -1,6 +1,6 @@
 const bookModel = require("../Models/bookModel");
 const Validator = require("../Validator/valid");
-const jwt = require('jsonwebtoken');
+
 
 
 const Book = async function (req, res) {
@@ -40,14 +40,6 @@ const Book = async function (req, res) {
 
         //check subcategory is valid or not
         if(!Validator.isValid(subcategory)) return res.status(400).send({status: false,message: "subcategory is Required"});
-
-        let token = req.headers["x-api-key"];
-        if (!token) token = req.headers["X-Api-Key"];
-        if (!token) {return res.status(400).send({status:false, mmsg: "Enter x-api-key In Header" });}
-
-        let decodedToken = jwt.verify(token, "fasterGroup7th",{expiresIn: "120m" })
-        let decoded = decodedToken.userId
-        if (userId != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
 
         let savedData = await bookModel.create(data)
         return res.status(201).send({ status: true,message : "success",  data: savedData});
