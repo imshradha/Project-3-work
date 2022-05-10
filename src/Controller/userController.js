@@ -37,10 +37,10 @@ const User = async function (req, res) {
             return res.status(400).send({status: false,message: "Email is Required"});
         }
         // check email is valid or not
-        // const isValidEmail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
-        // if (!isValidEmail) {
-        //     return res.status(400).send({ status: false, message: "Invalid email address"});
-        // }
+        const isValidEmail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
+        if (!isValidEmail) {
+            return res.status(400).send({ status: false, message: "Invalid email address"});
+        }
 
         // check email is already used
         const isEmailUsed = await userModel.findOne({email: email });
