@@ -5,4 +5,14 @@ const isValid = function(value) {
     if(typeof (value) == "string" && (value).trim().length > 0) {return true}
 }
 
-module.exports.isValid = isValid
+const isValidEmail = function(value){
+    if(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(value)==true){return true}
+    else return false
+
+}
+
+const isValidPassword = function(value){
+    if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(value)==true) {return true}
+    else return false
+}
+module.exports = {isValid , isValidEmail , isValidPassword}
