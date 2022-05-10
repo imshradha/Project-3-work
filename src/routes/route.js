@@ -9,5 +9,7 @@ router.post("/login",userController.Login)
 
 router.post('/books', bookController.Book)
 
+router.get('/getbooks', bookController.getBooks)
+
 
 module.exports = router;

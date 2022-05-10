@@ -15,4 +15,9 @@ const isValidPassword = function(value){
     if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(value)==true) {return true}
     else return false
 }
-module.exports = {isValid , isValidEmail , isValidPassword}
+
+const isValidObjectId= function(value){
+    if(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/.test(value)==true) {return true}
+    else return false
+}
+module.exports = {isValid , isValidEmail , isValidPassword, isValidObjectId}
