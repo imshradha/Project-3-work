@@ -1,4 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
+
+
 const isValid = function(value) {
     if(typeof (value) == "undefined" || typeof (value) == null) {return false}
     if(typeof (value).trim().length == 0){ return false}
@@ -15,7 +17,6 @@ const isValidPassword = function(value){
     if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(value)==true) {return true}
     else return false
 }
-
 function isValidObjectId(id){
      
     if(ObjectId.isValid(id)){
@@ -25,5 +26,4 @@ function isValidObjectId(id){
     }
     return false;
 }
- 
-module.exports = {isValid , isValidEmail , isValidPassword, isValidObjectId}
+module.exports = {isValid , isValidEmail , isValidPassword,isValidObjectId}

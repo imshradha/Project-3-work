@@ -86,13 +86,13 @@ const Login =async function(req,res){
         }
         //create the jwt token 
         let token = jwt.sign({
-            userid:logCheck._id.toString(),
+            userId:logCheck._id.toString(),
             group:7
 
-        },"fasterGroup7th",{expiresIn: "120" });// give the token expires time 120m 
+        },"fasterGroup7th",{expiresIn: "120m" });// give the token expires time 120m 
 
         res.setHeader("x-api-key", token);
-       return res.status(200).send({ status: true, data: "login Successful", token });
+       return res.status(200).send({ status: true, data: "login Successful",iat:new String(Date()), token});
     }catch(err){
         return res.status(500).send({status : false , message: err.message});
     }
