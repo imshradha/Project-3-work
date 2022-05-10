@@ -1,5 +1,6 @@
 const userModel = require("../Models/userModel");
 const jwt = require("jsonwebtoken");
+const { validate } = require("../Models/userModel");
 
 const User = async function (req, res) {
     try{
@@ -36,13 +37,13 @@ const User = async function (req, res) {
         if(!email){
             return res.status(400).send({status: false,message: "Email is Required"});
         }
-        // check email is valid or not
-        // const isValidEmail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
-        // if (!isValidEmail) {
-        //     return res.status(400).send({ status: false, message: "Invalid email address"});
-        // }
+        //check email is valid or not
+        const isValidEmail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
+        if (!isValidEmail) {
+            return res.status(400).send({ status: false, message: "Invalid email address"});
+        }
 
-        // check email is already used
+        //check email is already used
         const isEmailUsed = await userModel.findOne({email: email });
         if (isEmailUsed) {
             return res.status(400).send({ status: false, message:  "email is already used, try different one"});
@@ -75,15 +76,15 @@ const Login =async function(req,res){
     try{
         let data =req.body
         const{ email, password} = data
-        // const isValidEmail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
-        // if (!isValidEmail) {
-        //     return res.status(400).send({ status: false, message: "Invalid email address"});
-        // }
+        const isValidEmail = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email);
+        if (!isValidEmail) {
+            return res.status(400).send({ status: false, message: "Invalid email address"});
+        }
 
-        // const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(password);
-        // if (!isValidPassword) {
-        //     return res.status(400).send({ status: false, message: "Invalid password"});
-        // }
+        const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(password);
+        if (!isValidPassword) {
+            return res.status(400).send({ status: false, message: "Invalid password"});
+        }
 
         let logCheck = await userModel.findOne({email:email,password:password});
         if(!logCheck){
@@ -101,3 +102,6 @@ const Login =async function(req,res){
     }
 }
 module.exports.Login = Login;
+
+
+
