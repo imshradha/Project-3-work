@@ -48,34 +48,64 @@ const Book = async function (req, res) {
     }
 }
 /**************************************** GET BOOKS ******************************************/
+
 const getBooks = async function(req, res) {
     try {
-    
+
+        let fieldToUpdate = {
+           userId : req.query.userId,
+           category : req.query.category,
+           subcategory : req.query.subcategory
+          };
+
+          for (const [key, value] of Object.entries(fieldToUpdate)) {
+            if (!value) delete fieldToUpdate[key];
+      
+          }
+
+          
+        const book = await bookModel.find({ $and: [{ isDeleted: false }, fieldToUpdate] }).sort({title:1}).select({_id: 1,title: 1, excerpt: 1, userId: 1,category: 1, releasedAt: 1, reviews: 1});
+        if(book.length == 0) return res.status(404).send({status: false, message: "Book not found"})
+
+        return res.status(200).send({status: true, message: "Success", data: book})
+        
+
     }catch(error){
         return res.status(500).send({message: error.message});
     }
 }
 
 /************************************************ Update Book data ***************************************************/
+
 const updateBook = async function (req, res) {
     try{
     let bookId = req.params.bookId
 
-    const {title, excerpt, releasedAt, ISBN} = req.body;
+    let fieldToUpdate = {
+      title : req.body.title,
+      excerpt : req.body.excerpt,
+      releasedAt : req.body.releasedAt,
+      ISBN : req.body.ISBN
 
-    const checktitle = await bookModel.findOne({title: title, isDeleted:false})
+       };
+
+       for (const [key, value] of Object.entries(fieldToUpdate)) {
+         if (!value) delete fieldToUpdate[key];
+       }
+    
+    const checktitle = await bookModel.findOne({title: req.body.title, isDeleted:false})
     if(checktitle){
         return res.status(400).send({ status: false, message: 'title should be unique please try with another option'})
     }
  
-    const checkISBN = await bookModel.findOne({ISBN: ISBN, isDeleted: false})
+    const checkISBN = await bookModel.findOne({ISBN: req.body.ISBN, isDeleted: false})
     if(checkISBN){
         return res.status(400).send({ status: false, message: 'ISBN should be unique please try with another option'})
     }
     
     const checkBook = await bookModel.findOneAndUpdate(
       { _id: bookId, isDeleted: false },
-      { $set: { title: title, excerpt:excerpt,  ISBN:ISBN, releasedAt:releasedAt}  },
+      { $set: { ...fieldToUpdate } },
       { new: true })
     res.status(201).send({ Status: true, message:"Updated", Data: checkBook })
     }
