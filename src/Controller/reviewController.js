@@ -37,7 +37,72 @@ const createReview = async function(req, res) {
     }
 }
 
-module.exports.createReview = createReview
+const updateReviews = async function(req,res){
+    try{
+        let bookId = req.params.bookId;
+        let reviewId = req.params.reviewId;
+
+        let fieldToUpdate = {
+            reviewedBy : req.body.reviewedBy,
+            rating : req.body.rating,
+            review : req.body.review
+        };
+        if (!Validator.isValid(reviewId)) return res.status(400).send({ status: false, message: "reviewId is Required" });
+        if (!Validator.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: "reviewId is not valid" });
+
+        for (const [key, value] of Object.entries(fieldToUpdate)) {
+            if (!value) delete fieldToUpdate[key];
+        }
+        let books = await bookModel.findById(bookId , {isDeleted : false})
+        if(!books) return res.status(404).send({ status: false, message: "book with this id , not found"});
+
+        if(bookId.reviews!=0){
+        let reviews = await reviewModel.findOneAndUpdate({_id : reviewId} ,{ $set : {...fieldToUpdate}}, {new : true})
+        console.log(reviews)
+        if(!reviews) return res.status(404).send({ status: false, message: "review with this id , not found"});
+        let temp = JSON.stringify(books);
+        let obj = JSON.parse(temp);
+        obj.reviews = reviews;
+        return res.status(200).send({ status: false, message: "success", data : obj});
+        }
+
+    }
+    catch(err){
+    return res.status(500).send({message : err.message})
+    }
+}
+
+const deleteReviews = async function(req,res){
+    try{
+        let bookId = req.params.bookId;
+        let reviewId = req.params.reviewId;
+
+        let book = await bookModel.findOne({_id : bookId,isDeleted : false})
+      
+        if(!book) return res.status(404).send({status : false , message : "book with this id does not exist"})
+        else{
+
+        if (!Validator.isValid(reviewId)) return res.status(400).send({ status: false, message: "reviewId is Required" });
+        if (!Validator.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: "reviewId is not valid" });
+
+        let reviews = await reviewModel.findById(reviewId,{isDeleted: false})
+        if(!reviews) return res.status(404).send({status : false , message : "review with this id does not exist"})
+
+        reviews.isDeleted = true;
+        await reviews.save();
+        book.reviews = book.reviews-1
+        await book.save();
+
+        return res.status(200).send({status : true , message : "success"})
+        }
+    }
+    catch(err){
+        return res.status(500).send({message : err.message})
+    }
+    }
+
+
+module.exports = { createReview,updateReviews,deleteReviews }
 
 
 

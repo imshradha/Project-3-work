@@ -11,7 +11,9 @@ router.post("/login",userController.Login)
 
 router.post('/books',Authentication,Authorization, bookController.Book)
 
-router.get('/getbooks',Authentication, bookController.getBooks)
+router.get('/books',Authentication, bookController.getBooks)
+
+router.get('/books/:bookId', bookController.getBooksBybookId)
 
 router.put("/books/:bookId", Authentication, Authorization, bookController.updateBook)
 
@@ -19,6 +21,9 @@ router.delete("/books/:bookId",Authentication,Authorization,bookController.delet
 
 router.post("/books/:bookId/review",reviewController.createReview)
 
+router.put("/books/:bookId/review/:reviewId",reviewController.updateReviews)
+
+router.delete("/books/:bookId/review/:reviewId",reviewController.deleteReviews)
 
 
 module.exports = router;
