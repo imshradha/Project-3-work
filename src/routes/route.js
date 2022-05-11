@@ -10,9 +10,9 @@ router.post("/login",userController.Login)
 
 router.post('/books',Authentication,Authrization, bookController.Book)
 
-router.get('/getbooks', bookController.getBooks)
+router.get('/getbooks',Authentication, bookController.getBooks)
 
-router.put("/books/:bookId",bookController.updateBook)
+router.put("/books/:bookId",Authentication, Authrization, bookController.updateBook)
 
 
 module.exports = router;
