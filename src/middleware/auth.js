@@ -24,7 +24,7 @@ const Authentication = async function (req, res, next) {
 module.exports.Authentication = Authentication;
 
 
-const Authrization = async function (req, res, next) {
+const Authorization = async function (req, res, next) {
     try {
         let token = req.headers["x-api-key"];
         if (!token) token = req.headers["X-Api-Key"]; //taking the x-api-key of value token in headers
@@ -52,9 +52,9 @@ const Authrization = async function (req, res, next) {
             if (!book) { return res.send("Blog doesn't exist"); }
             //taking the user id in book model
             let user = book.userId.toString() // the user id is convert to string and save to user variable
-            console.log(author)
+           
             //check the user id and decoded token in user id same or not 
-            if (user != decoded) { return res.status(401).send("Not Authorised!!")}
+            if (user != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }
         next()
     }
@@ -62,4 +62,4 @@ const Authrization = async function (req, res, next) {
         return res.status(500).send({ status:false,msg: err.message });
     }
 }
-module.exports.Authrization = Authrization;
+module.exports.Authorization = Authorization;
