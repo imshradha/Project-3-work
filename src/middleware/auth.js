@@ -33,28 +33,26 @@ const Authrization = async function (req, res, next) {
         // verify the token 
         let decodedToken = jwt.verify(token, "fasterGroup7th")
          let decoded = decodedToken.userId
-
         let bookId = req.params.bookId;
         // check the value of bookid are present in params  or not
         if(!Validator.isValid(bookId)){
             let userId = req.body.userId;
-
             // check the user id present in body
             if(!Validator.isValid(userId)) return res.status(400).send({status: false,message: "userId is Required"});
             //validation of user id
             if(!Validator.isValidObjectId(userId))  return res.status(400).send({status: false,message: "userId is not valid"});
-            
+
            //check the  user id are present in decoded token
             if (userId != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }else{
             // check the book id are present in db
             let book = await bookModel.findById(bookId);
-            if (!book) { return res.send("Blog doesn't exist"); }
+            if (!book) { return res.status(404).send({status:false,msg:"book id not exists!!"}); }
             //taking the user id in book model
             let user = book.userId.toString() // the user id is convert to string and save to user variable
-            console.log(author)
+            
             //check the user id and decoded token in user id same or not 
-            if (user != decoded) { return res.status(401).send("Not Authorised!!")}
+            if (user != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }
         next()
     }

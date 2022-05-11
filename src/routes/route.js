@@ -10,5 +10,7 @@ router.post("/login",userController.Login)
 
 router.post('/books',Authentication,Authrization, bookController.Book)
 
+router.delete("/books/:bookId",Authentication,Authrization,bookController.deleteBook)
+
 
 module.exports = router;
