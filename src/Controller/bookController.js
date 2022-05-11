@@ -25,7 +25,7 @@ const Book = async function (req, res) {
 
         //check userId is valid or not
         if (!Validator.isValid(userId)) return res.status(400).send({ status: false, message: "userId is Required" });
-        if (!Validator.isValidObjectId(userId)) return res.status(400).send({ status: false, message: "userId is not valid" });
+        if (!Validator.isValidObjectId(userId)) return res.status(400).send({ status: false, message: "userId is not a valid ObjectId" });
 
         //check ISBN is valid or not
         if (!Validator.isValid(ISBN)) return res.status(400).send({ status: false, message: "ISBN is Required" });
@@ -57,11 +57,12 @@ const getBooks = async function (req, res) {
             category: req.query.category,
             subcategory: req.query.subcategory
         };
+        let data = req.query;
 
         for (const [key, value] of Object.entries(fieldToUpdate)) {
             if (!value) delete fieldToUpdate[key];
         }
-        const book = await bookModel.find({ $and: [{ isDeleted: false }, fieldToUpdate] }).sort({ title: 1 }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 });
+        const book = await bookModel.find({ $and: [{ isDeleted: false }, fieldToUpdate] }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).collation({locale : "en"}).sort({ title: 1 });
         if (book.length == 0) return res.status(404).send({ status: false, message: "Book not found" })
 
         return res.status(200).send({ status: true, message: "Success", data: book })
@@ -83,7 +84,7 @@ const getBooksBybookId = async function(req,res){
 
     let book = await bookModel.findById(bookId ,{isDeleted : false}).select();
     if(!book) return res.status(404).send({status : false , message : "Book does not exist with this id"})
-    let reviews = await reviewModel.find({bookId : bookId}).select();
+    let reviews = await reviewModel.find({bookId : bookId,isDeleted : false}).select();
     
     //stringifying book model object to add key
     let temp = JSON.stringify(book);
@@ -148,7 +149,7 @@ const deleteBook = async function (req, res) {
     //check the book data is delete or not
     if (bookDetails.isDeleted == false) {
         let deleted = await bookModel.findByIdAndUpdate(bookid, { $set: { isDeleted: true, deletedAt: new String(Date()) } }, { new: true });
-        return res.status(200).send({ status: true, msg: deleted }) // delet tehe book data and update the deleted at date
+        return res.status(200).send({ status: true, msg: "Deleted Successfully"}) // delet tehe book data and update the deleted at date
     } else {
         return res.status(400).send({ status: false, msg: "this book is already deleted" })
     }
