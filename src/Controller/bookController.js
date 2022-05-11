@@ -50,19 +50,7 @@ const Book = async function (req, res) {
 /**************************************** GET BOOKS ******************************************/
 const getBooks = async function(req, res) {
     try {
-        //Reading input from req.query 
-        const query = req.query;
-
-        const { userId, category, subcategory } = query;
-
-        const validuser = await userModel.findById(userId);
-          
-        const book = await bookModel.find({ $and: [{ isDeleted: false }, query] }).sort({title:1}).populate('userId');
-        if(book.length == 0) return res.status(404).send({status: false, message: "Book not found"})
-
-        return res.status(200).send({status: true, message: "Success", data: book})
-        
-
+    
     }catch(error){
         return res.status(500).send({message: error.message});
     }
