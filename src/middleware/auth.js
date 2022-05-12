@@ -12,8 +12,14 @@ const Authentication = async function (req, res, next) {
         if (!token) {return res.status(400).send({status:false, mmsg: "Enter x-api-key In Header" });}
         // token verification
         let checktoken = jwt.verify(token, "fasterGroup7th");
+            // if (exp < (new Date().getTime() + 1) / 1000) {
+            //     this.handleSetTimeout();
+            //     return res.sent("token expired!!")
+            // } 
         //check the token are verify or not
-        if (!checktoken) {return res.status(404).send({ Status: false, msg: "Enter Valid Token" });}
+        if (!checktoken) {
+            return res.status(404).send({ Status: false, msg: "Enter Valid Token" });
+        }
         else {console.log("Token Verified");}
         next();
     }
@@ -24,7 +30,7 @@ const Authentication = async function (req, res, next) {
 module.exports.Authentication = Authentication;
 
 
-const Authrization = async function (req, res, next) {
+const Authorization = async function (req, res, next) {
     try {
         let token = req.headers["x-api-key"];
         if (!token) token = req.headers["X-Api-Key"]; //taking the x-api-key of value token in headers
@@ -45,12 +51,15 @@ const Authrization = async function (req, res, next) {
            //check the  user id are present in decoded token
             if (userId != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }else{
+            if(!Validator.isValid(bookId)) return res.status(400).send({status: false,message: "book Id is Required"});
+            //validation of user id
+            if(!Validator.isValidObjectId(bookId))  return res.status(400).send({status: false,message: "book Id is not valid"});
+
             // check the book id are present in db
             let book = await bookModel.findById(bookId);
             if (!book) { return res.status(404).send({status:false,msg:"book id not exists!!"}); }
             //taking the user id in book model
             let user = book.userId.toString() // the user id is convert to string and save to user variable
-            
             //check the user id and decoded token in user id same or not 
             if (user != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }
@@ -60,4 +69,4 @@ const Authrization = async function (req, res, next) {
         return res.status(500).send({ status:false,msg: err.message });
     }
 }
-module.exports.Authrization = Authrization;
+module.exports.Authorization = Authorization;

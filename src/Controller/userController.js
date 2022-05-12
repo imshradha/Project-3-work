@@ -14,7 +14,7 @@ const User = async function (req, res) {
         
         if(!Validator.isValid(title)) return res.status(400).send({status: false,message: "Title is Required"});
         
-        if(!/^[A-Za-z ]+$/.test(title))  return res.status(400).send({status: false, message: "Invalid title"});
+        if (["Mr", "Miss", "Mrs"].indexOf(title) == -1) return res.status(400).send({ status: false, message: "Invalid title" })
         
         if(!Validator.isValid(name)) return res.status(400).send({status: false,message: "Name is Required"});
         
@@ -38,7 +38,7 @@ const User = async function (req, res) {
       if (!Validator.isValidEmail(email)) return res.status(400).send({ status: false, message: "Invalid email address"});
         
 
-        // check email is already used
+        //check email is already used
         const isEmailUsed = await userModel.findOne({email: email });
         if (isEmailUsed) return res.status(400).send({ status: false, message:  "email is already used, try different one"});
     
@@ -84,7 +84,7 @@ const Login =async function(req,res){
             userId:logCheck._id.toString(),
             group:7
 
-        },"fasterGroup7th",{expiresIn: "120m" });// give the token expires time 120m 
+        },"fasterGroup7th",{expiresIn: "200m" });// give the token expires time 120m 
 
         res.setHeader("x-api-key", token);
        return res.status(200).send({ status: true, data: "login Successful",iat:new String(Date()), token});
@@ -93,3 +93,6 @@ const Login =async function(req,res){
     }
 }
 module.exports.Login = Login;
+
+
+
