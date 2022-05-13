@@ -84,7 +84,7 @@ const Login =async function(req,res){
             userId:logCheck._id.toString(),
             group:7
 
-        },"fasterGroup7th",{expiresIn: "200m" });// give the token expires time 120m 
+        },"fasterGroup7th",{expiresIn: "120m" });// give the token expires time 120m 
 
         res.setHeader("x-api-key", token);
        return res.status(200).send({ status: true, data: "login Successful",iat:new String(Date()), token});

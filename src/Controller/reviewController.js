@@ -66,7 +66,7 @@ const updateReviews = async function(req,res){
         let obj = JSON.parse(temp);
         obj.reviews = reviews;
 
-        return res.status(200).send({ status: false, message: "success", data : obj});
+        return res.status(200).send({ status: true, message: "success", data : obj});
         }
 
     }
