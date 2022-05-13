@@ -13,10 +13,6 @@ const createReview = async function(req, res) {
         //check req.body is empty or not
         if(Object.keys(data).length == 0){return res.status(400).send({status:false,msg:"No data provided!"})}
 
-        //check reviewBy is valid or not
-        if(!Validator.isValid(reviewedBy)) return res.status(400).send({status: false,message: "reviewedBy is Required"});
-        if(!/^[A-Za-z ]+$/.test(reviewedBy))  return res.status(400).send({status: false, message: "Invalid reviewedBy"});
-        
         //check review is valid or not
         if(!Validator.isValid(review)) return res.status(400).send({status: false,message: "review is Required"});
         if(!/^[A-Za-z . - ]+$/.test(review))  return res.status(400).send({status: false, message: "Invalid review"});
@@ -25,6 +21,16 @@ const createReview = async function(req, res) {
 
         if(!Validator.isValid(rating)) return res.status(400).send({status: false,message: "rating is Required"});
         if(!/^[0-5]{1}$/.test(rating)) return res.status(400).send({status: false,message: "rating is not valid"});
+
+        let fieldToUpdate = {
+            bookId : req.params.bookId.trim(),
+            reviewedBy : req.body.reviewedBy.trim(),
+            rating : req.body.rating.trim(),
+            review : req.body.review.trim()
+        };
+        for (const [key, value] of Object.entries(fieldToUpdate)) {
+            if (!value) delete fieldToUpdate[key];  
+        }
 
         const bookReview = await bookModel.findByIdAndUpdate(bookId, {$inc:{reviews: 1}});
         data.bookId = req.params.bookId;
@@ -45,7 +51,7 @@ const updateReviews = async function(req,res){
 
         let fieldToUpdate = {
             reviewedBy : req.body.reviewedBy,
-            rating : req.body.rating,
+            rating : req.body.rating.trim(),
             review : req.body.review
         };
         if (!Validator.isValid(reviewId)) return res.status(400).send({ status: false, message: "reviewId is Required" });
