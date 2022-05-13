@@ -12,6 +12,8 @@ const Authentication = async function (req, res, next) {
         if (!token) {return res.status(400).send({status:false, mmsg: "Enter x-api-key In Header" });}
         // token verification
         let checktoken = jwt.verify(token, "fasterGroup7th");
+        console.log(checktoken)
+        let exp = checktoken.exp
         //check the token are verify or not
         if (!checktoken) {return res.status(404).send({ Status: false, msg: "Enter Valid Token" });}
         else {console.log("Token Verified");}
