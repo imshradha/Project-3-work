@@ -17,13 +17,15 @@ router.get('/books/:bookId',Authentication, bookController.getBooksBybookId)
 
 router.put("/books/:bookId",Authentication,Authorization, bookController.updateBook)
 
-router.delete("/books/:bookId",Authentication,Authorization, bookController.deleteBook)
+router.delete("/books/:bookId",Authentication,Authorization,bookController.deleteBook)
 
-router.post("/books/:bookId/review",Authentication, reviewController.createReview)
+router.post("/books/:bookId/review",Authentication,reviewController.createReview)
 
-router.put("/books/:bookId/review/:reviewId",Authentication, reviewController.updateReviews)
+router.put("/books/:bookId/review/:reviewId",Authentication,reviewController.updateReviews)
 
-router.delete("/books/:bookId/review/:reviewId",Authentication, reviewController.deleteReviews)
+router.delete("/books/:bookId/review/:reviewId",Authentication,reviewController.deleteReviews)
+
+
 
 
 module.exports = router;

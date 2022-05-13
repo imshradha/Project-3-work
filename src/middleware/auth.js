@@ -12,10 +12,14 @@ const Authentication = async function (req, res, next) {
         if (!token) {return res.status(400).send({status:false, mmsg: "Enter x-api-key In Header" });}
         // token verification
         let checktoken = jwt.verify(token, "fasterGroup7th");
-        console.log(checktoken)
-        let exp = checktoken.exp
+            // if (exp < (new Date().getTime() + 1) / 1000) {
+            //     this.handleSetTimeout();
+            //     return res.sent("token expired!!")
+            // } 
         //check the token are verify or not
-        if (!checktoken) {return res.status(404).send({ Status: false, msg: "Enter Valid Token" });}
+        if (!checktoken) {
+            return res.status(404).send({ Status: false, msg: "Enter Valid Token" });
+        }
         else {console.log("Token Verified");}
         next();
     }
@@ -35,26 +39,27 @@ const Authorization = async function (req, res, next) {
         // verify the token 
         let decodedToken = jwt.verify(token, "fasterGroup7th")
          let decoded = decodedToken.userId
-
         let bookId = req.params.bookId;
         // check the value of bookid are present in params  or not
         if(!Validator.isValid(bookId)){
             let userId = req.body.userId;
-
             // check the user id present in body
             if(!Validator.isValid(userId)) return res.status(400).send({status: false,message: "userId is Required"});
             //validation of user id
             if(!Validator.isValidObjectId(userId))  return res.status(400).send({status: false,message: "userId is not valid"});
-            
+
            //check the  user id are present in decoded token
             if (userId != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }else{
+            if(!Validator.isValid(bookId)) return res.status(400).send({status: false,message: "book Id is Required"});
+            //validation of user id
+            if(!Validator.isValidObjectId(bookId))  return res.status(400).send({status: false,message: "book Id is not valid"});
+
             // check the book id are present in db
             let book = await bookModel.findById(bookId);
-            if (!book) { return res.send("Blog doesn't exist"); }
+            if (!book) { return res.status(404).send({status:false,msg:"book id not exists!!"}); }
             //taking the user id in book model
             let user = book.userId.toString() // the user id is convert to string and save to user variable
-           
             //check the user id and decoded token in user id same or not 
             if (user != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }

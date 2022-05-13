@@ -4,7 +4,7 @@ const Validator = require("../Validator/valid");
 
 
 
-const Book = async function (req, res) {
+const Book = async function (req, res){
 
     try {
         const data = req.body;
@@ -16,6 +16,7 @@ const Book = async function (req, res) {
         //check title is valid or not
         if (!Validator.isValid(title)) return res.status(400).send({ status: false, message: "Title is Required" });
         if (!/^[A-Za-z ]+$/.test(title)) return res.status(400).send({ status: false, message: "Invalid title" });
+        
         let titleCheck = await bookModel.findOne({ title: title })
         if (titleCheck) return res.status(400).send({ status: false, message: " title already exists , Enter unique value" })
 
@@ -57,7 +58,7 @@ const getBooks = async function (req, res) {
             category: req.query.category,
             subcategory: req.query.subcategory
         };
-        let data = req.query;
+        
 
         for (const [key, value] of Object.entries(fieldToUpdate)) {
             if (!value) delete fieldToUpdate[key];
@@ -82,9 +83,10 @@ const getBooksBybookId = async function(req,res){
     if (!Validator.isValid(bookId)) return res.status(400).send({ status: false, message: "bookId is Required" });
     if (!Validator.isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "bookId is not valid" });
 
-    let book = await bookModel.findById(bookId ,{isDeleted : false}).select();
+    let book = await bookModel.findById(bookId ,{isDeleted : false})
+
     if(!book) return res.status(404).send({status : false , message : "Book does not exist with this id"})
-    let reviews = await reviewModel.find({bookId : bookId,isDeleted : false}).select();
+    let reviews = await reviewModel.find({bookId : bookId,isDeleted : false})
     
     //stringifying book model object to add key
     let temp = JSON.stringify(book);
@@ -125,11 +127,10 @@ const updateBook = async function (req, res) {
             return res.status(400).send({ status: false, message: 'ISBN should be unique please try with another option' })
         }
 
-        const checkBook = await bookModel.findOneAndUpdate(
-            { _id: bookId, isDeleted: false },
-            { $set: { ...fieldToUpdate } },
+        const checkBook = await bookModel.findOneAndUpdate({_id:bookId,isDeleted:false },{ $set: { ...fieldToUpdate } },
             { new: true })
-        res.status(201).send({ Status: true, message: "Updated", Data: checkBook })
+
+        return res.status(201).send({ Status: true, message: "Updated", Data: checkBook })
     }
     catch (error) {
         return res.status(500).send({ message: error.message });
@@ -156,5 +157,9 @@ const deleteBook = async function (req, res) {
     }
 
 }
+
+
+
 module.exports = { Book, getBooks,getBooksBybookId, updateBook, deleteBook }
+
 

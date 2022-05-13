@@ -20,7 +20,7 @@ const createReview = async function(req, res) {
         //check rating is valid or not
 
         if(!Validator.isValid(rating)) return res.status(400).send({status: false,message: "rating is Required"});
-        if(!/^[0-9]{1,2}$/.test(rating)) return res.status(400).send({status: false,message: "rating is not valid"});
+        if(!/^[0-5]{1}$/.test(rating)) return res.status(400).send({status: false,message: "rating is not valid"});
 
         let fieldToUpdate = {
             bookId : req.params.bookId.trim(),
@@ -33,7 +33,9 @@ const createReview = async function(req, res) {
         }
 
         const bookReview = await bookModel.findByIdAndUpdate(bookId, {$inc:{reviews: 1}});
-        const savedData = await reviewModel.create(fieldToUpdate)
+        data.bookId = req.params.bookId;
+
+        const savedData = await reviewModel.create(data)
         return res.status(201).send({ status: true, message: "success",  data: savedData});
 
     }catch(error) {
@@ -63,11 +65,13 @@ const updateReviews = async function(req,res){
 
         if(bookId.reviews!=0){
         let reviews = await reviewModel.findOneAndUpdate({_id : reviewId} ,{ $set : {...fieldToUpdate}}, {new : true})
-        console.log(reviews)
+       
         if(!reviews) return res.status(404).send({ status: false, message: "review with this id , not found"});
+
         let temp = JSON.stringify(books);
         let obj = JSON.parse(temp);
         obj.reviews = reviews;
+
         return res.status(200).send({ status: false, message: "success", data : obj});
         }
 
@@ -82,7 +86,7 @@ const deleteReviews = async function(req,res){
         let bookId = req.params.bookId;
         let reviewId = req.params.reviewId;
 
-        let book = await bookModel.findOne({_id : bookId,isDeleted : false})
+        let book = await bookModel.findOne({_id : bookId, isDeleted : false})
       
         if(!book) return res.status(404).send({status : false , message : "book with this id does not exist"})
         else{
