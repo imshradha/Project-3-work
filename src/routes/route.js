@@ -5,24 +5,20 @@ const bookController = require("../Controller/bookController")
 const reviewController = require("../Controller/reviewController")
 const {Authentication,Authorization} = require("../middleware/auth")
 
-router.post('/register', userController.User)
-
+//user APIs
+router.post('/register', userController.Register)
 router.post("/login",userController.Login)
 
+//Book APIs
 router.post('/books',Authentication,Authorization, bookController.Book)
-
 router.get('/books',Authentication, bookController.getBooks)
-
 router.get('/books/:bookId',Authentication, bookController.getBooksBybookId)
-
 router.put("/books/:bookId",Authentication,Authorization, bookController.updateBook)
-
 router.delete("/books/:bookId",Authentication,Authorization,bookController.deleteBook)
 
+//review APIs
 router.post("/books/:bookId/review",Authentication,Authorization,reviewController.createReview)
-
 router.put("/books/:bookId/review/:reviewId",Authentication,Authorization,reviewController.updateReviews)
-
 router.delete("/books/:bookId/review/:reviewId",Authentication,Authorization,reviewController.deleteReviews)
 
 
