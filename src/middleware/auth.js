@@ -4,21 +4,29 @@ const Validator = require("../Validator/valid")
 
 
 
+
 const Authentication = async function (req, res, next) {
     try {
         // getting token from req(header)
         let token = req.headers["x-api-key"];
         if (!token) token = req.headers["X-Api-Key"];
-        if (!token) {return res.status(400).send({status:false, mmsg: "Enter x-api-key In Header" });}
+        if (!token) {return res.status(400).send({status:false, msg: "Enter x-api-key In Header" });}
         // token verification
-        let checktoken = jwt.verify(token, "fasterGroup7th");
-
-        //check the token are verify or not
-        if (!checktoken) {
-            return res.status(404).send({ Status: false, msg: "Enter Valid Token" });
-        }
-        else {console.log("Token Verified");}
-        next();
+       
+        let checktoken = jwt.verify(token, "project3Group7" , { ignoreExpiration: true });
+        if(!checktoken) return res.status(401).send({status : false , message : "Invalid token"})
+      
+        //The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970
+        if (Date.now() > checktoken.exp * 1000) {
+            return res.status(401).send({
+              status: false,
+              msg: "Token Expired",
+            });
+          }
+        else {
+            console.log("Token Verified");
+            next();
+        } 
     }
     catch (err) {
         res.status(500).send({ msg: err.message });
@@ -34,7 +42,7 @@ const Authorization = async function (req, res, next) {
         // check the token are prenent or not in headers
         if (!token) {return res.status(400).send({ Error: "Enter x-api-key In Header" });}
         // verify the token 
-        let decodedToken = jwt.verify(token, "fasterGroup7th")
+        let decodedToken = jwt.verify(token, "project3Group7")
          let decoded = decodedToken.userId
         let bookId = req.params.bookId;
         // check the value of bookid are present in params  or not
