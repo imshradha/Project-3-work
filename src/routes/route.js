@@ -10,16 +10,20 @@ router.post('/register', userController.Register)
 router.post("/login",userController.Login)
 
 //Book APIs
-router.post('/books',Authentication,Authorization, bookController.Book)
-router.get('/books',Authentication, bookController.getBooks)
-router.get('/books/:bookId',Authentication, bookController.getBooksBybookId)
-router.put("/books/:bookId",Authentication,Authorization, bookController.updateBook)
-router.delete("/books/:bookId",Authentication,Authorization,bookController.deleteBook)
+router.route('/books')
+.post(Authentication,Authorization, bookController.Book)
+.get(Authentication, bookController.getBooks)
+
+router.route('/books/:bookId')
+.get(Authentication, bookController.getBooksBybookId)
+.put(Authentication,Authorization, bookController.updateBook)
+.delete(Authentication,Authorization,bookController.deleteBook)
 
 //review APIs
 router.post("/books/:bookId/review",Authentication,Authorization,reviewController.createReview)
-router.put("/books/:bookId/review/:reviewId",Authentication,Authorization,reviewController.updateReviews)
-router.delete("/books/:bookId/review/:reviewId",Authentication,Authorization,reviewController.deleteReviews)
+router.route('/books/:bookId/review/:reviewId')
+.put(Authentication,Authorization,reviewController.updateReviews)
+.delete(Authentication,Authorization,reviewController.deleteReviews)
 
 
 
