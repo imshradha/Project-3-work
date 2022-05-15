@@ -12,6 +12,7 @@ const Authentication = async function (req, res, next) {
         if (!token) token = req.headers["X-Api-Key"];
         if (!token) {return res.status(400).send({status:false, msg: "Not Authentiated! Please login for token " });}
         // token verification
+        // if(req.tokenCheck = token)return res.status(401).send({status : false , message : "Invalid token"})
        
         jwt.verify(token,"project3Group7",{ ignoreExpiration: true },function (err, decoded) {
               if (err) {return res.status(400).send({status : false, meessage : "token invalid"})}
@@ -22,9 +23,7 @@ const Authentication = async function (req, res, next) {
                 }
                 req.userId = decoded.userId;
                 next();
-              }
-            }
-          );
+              }});
        
     }
     catch (err) {

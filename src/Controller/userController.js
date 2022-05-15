@@ -9,7 +9,7 @@ const Register = async function (req, res) {
     try{
         let data = req.body
 
-        let {title, name, phone, email, password,pincode} = data
+        let {title, name, phone, email, password} = data
 
         /*----------------------------validations ----------------------------*/
         if(!Validator.isValidReqBody(data)){return res.status(400).send({status:false,msg:"Please provide user data"})}
@@ -36,6 +36,7 @@ const Register = async function (req, res) {
 
         if(!Validator.isValid(password)) return res.status(400).send({status: false,message: "Password is Required"});
         if (!Validator.isValidPassword(password)) return res.status(400).send({ status: false, message: "Invalid password (length : 8-16) : Abcd@123456"});
+
         if(!/^[0-9]{6}$/.test(data.address.pincode)) return res.status(400).send({status: false,message: "Pincode  is not valid minlenght:-6"});
 
         /*-------------------create user ---------------------------------------------*/ 
@@ -77,6 +78,7 @@ const Login =async function(req,res){
 
         },"project3Group7",{expiresIn: "1200s" });
         res.setHeader("x-api-key", token);
+       
        return res.status(200).send({ status: true, message: "Login Successful",iat:new String(Date()),token: token})
     }
     catch(err){
