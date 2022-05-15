@@ -14,20 +14,19 @@ const Authentication = async function (req, res, next) {
         // token verification
         // if(req.tokenCheck = token)return res.status(401).send({status : false , message : "Invalid token"})
        
-        let checktoken = jwt.verify(token, "project3Group7" , { ignoreExpiration: true });
-        if(!checktoken) return res.status(401).send({status : false , message : "Invalid token"})
-      
-        //The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970
-        if (Date.now() > checktoken.exp * 1000) {
-            return res.status(401).send({
-              status: false,
-              msg: "Token Expired",
-            });
-          }
-        else {
-            console.log("Token Verified");
-            next();
-        } 
+        jwt.verify(token,"project3Group7",{ ignoreExpiration: true },function (err, decoded) {
+              if (err) {return res.status(400).send({status : false, meessage : "token invalid"})}
+               else {
+                //The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970
+                if (Date.now() > decoded.exp * 1000) {
+                  return res.status(401).send({status: false,msg: "Session Expired",});
+                }
+                req.userId = decoded.userId;
+                next();
+              }
+            }
+          );
+       
     }
     catch (err) {
         res.status(500).send({ msg: err.message });
@@ -43,7 +42,7 @@ const Authorization = async function (req, res, next) {
         // check the token are prenent or not in headers
         if (!token) {return res.status(400).send({ Error: "Enter x-api-key In Header" });}
         // verify the token 
-        let decodedToken = jwt.verify(token, "project3Group7")
+        let decodedToken = jwt.verify(token, "project3Group7" )
          let decoded = decodedToken.userId
         let bookId = req.params.bookId;
         // check the value of bookid are present in params  or not
@@ -51,14 +50,13 @@ const Authorization = async function (req, res, next) {
             let userId = req.body.userId;
             // check the user id present in body
             if(!Validator.isValid(userId)) return res.status(400).send({status: false,message: "userId is Required"});
-            //validation of user id
             if(!Validator.isValidObjectId(userId))  return res.status(400).send({status: false,message: "userId is not valid"});
 
-           //check the  user id are present in decoded token
+            //check the  user id are present in decoded token
             if (userId != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
-        }else{
+        }
+        else{
             if(!Validator.isValid(bookId)) return res.status(400).send({status: false,message: "book Id is Required"});
-            //validation of user id
             if(!Validator.isValidObjectId(bookId))  return res.status(400).send({status: false,message: "book Id is not valid"});
 
             // check the book id are present in db
