@@ -84,14 +84,17 @@ const updateReviews = async function(req,res){
             if (!value) delete fieldToUpdate[key];
             
         }
-        let booksDtails = await bookModel.findOne({_id:bookId,isDeleted:false})
-        if(!booksDtails) return res.status(404).send({ status: false, message: "book with this id , not found"});
+        let book = await bookModel.findOne({_id:bookId,isDeleted:false})
+        if(!book) return res.status(404).send({ status: false, message: "book with this id does not exist"});
 
         if(bookId.reviews!=0){
         let reviews = await reviewModel.findOneAndUpdate({_id:reviewId,isDeleted:false} ,{ $set : {...fieldToUpdate}}, {new : true})
         console.log(reviews)
-        if(!reviews) return res.status(404).send({ status: false, message: "review with this id , not found"});
-        let temp = JSON.stringify(booksDtails);
+        if(!reviews) return res.status(404).send({ status: false, message: "review with this id does not exist"});
+
+        if (reviews.bookId.toString() !== bookId) return res.status(403).send({status: false, message: `review is not from Book - ${book.title}`});
+
+        let temp = JSON.stringify(book);
         let obj = JSON.parse(temp);
         obj.reviews = reviews;
         return res.status(200).send({ status: false, message: "success", data : obj});
