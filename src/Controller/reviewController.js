@@ -84,14 +84,14 @@ const updateReviews = async function(req,res){
             if (!value) delete fieldToUpdate[key];
             
         }
-        let books = await bookModel.findById(bookId , {isDeleted : false})
-        if(!books) return res.status(404).send({ status: false, message: "book with this id , not found"});
+        let booksDtails = await bookModel.findOne({_id:bookId,isDeleted:false})
+        if(!booksDtails) return res.status(404).send({ status: false, message: "book with this id , not found"});
 
         if(bookId.reviews!=0){
-        let reviews = await reviewModel.findOneAndUpdate({_id : reviewId,isDeleted : false} ,{ $set : {...fieldToUpdate}}, {new : true})
+        let reviews = await reviewModel.findOneAndUpdate({_id:reviewId,isDeleted:false} ,{ $set : {...fieldToUpdate}}, {new : true})
         console.log(reviews)
         if(!reviews) return res.status(404).send({ status: false, message: "review with this id , not found"});
-        let temp = JSON.stringify(books);
+        let temp = JSON.stringify(booksDtails);
         let obj = JSON.parse(temp);
         obj.reviews = reviews;
         return res.status(200).send({ status: false, message: "success", data : obj});
@@ -113,7 +113,7 @@ const deleteReviews = async function(req,res){
         if(!Validator.isValidObjectId(bookId))  return res.status(400).send({status: false,message: "book Id is not valid"});
 
 
-        let book = await bookModel.findOne({_id : bookId,isDeleted : false})
+        let book = await bookModel.findOne({_id:bookId,isDeleted:false})
       
         if(!book) return res.status(404).send({status : false , message : "book with this id does not exist"})
         else{
@@ -121,7 +121,7 @@ const deleteReviews = async function(req,res){
         if (!Validator.isValid(reviewId)) return res.status(400).send({ status: false, message: "reviewId is Required" });
         if (!Validator.isValidObjectId(reviewId)) return res.status(400).send({ status: false, message: "reviewId is not valid" });
 
-        let reviews = await reviewModel.findById(reviewId,{isDeleted: false})
+        let reviews = await reviewModel.findOne({_id:reviewId,isDeleted:false})
         if(!reviews) return res.status(404).send({status : false , message : "review with this id does not exist"})
 
         reviews.isDeleted = true;
