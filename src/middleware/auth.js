@@ -12,6 +12,7 @@ const Authentication = async function (req, res, next) {
         if (!token) token = req.headers["X-Api-Key"];
         if (!token) {return res.status(400).send({status:false, msg: "Enter x-api-key In Header" });}
         // token verification
+        // if(req.tokenCheck = token)return res.status(401).send({status : false , message : "Invalid token"})
        
         let checktoken = jwt.verify(token, "project3Group7" , { ignoreExpiration: true });
         if(!checktoken) return res.status(401).send({status : false , message : "Invalid token"})
