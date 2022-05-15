@@ -20,13 +20,10 @@ router.route('/books/:bookId')
 .delete(Authentication,Authorization,bookController.deleteBook)
 
 //review APIs
-router.post("/books/:bookId/review",Authentication,reviewController.createReview)
+router.post("/books/:bookId/review",reviewController.createReview)
 router.route('/books/:bookId/review/:reviewId')
-.put(Authentication,reviewController.updateReviews)
-.delete(Authentication,reviewController.deleteReviews)
-
-
-
+.put(reviewController.updateReviews)
+.delete(reviewController.deleteReviews)
 
 //export router
 module.exports = router;

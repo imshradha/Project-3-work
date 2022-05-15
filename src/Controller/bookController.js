@@ -153,7 +153,7 @@ const deleteBook = async function (req, res) {
         let deleted = await bookModel.findByIdAndUpdate(bookid, { $set: { isDeleted: true, deletedAt: new String(Date()) } }, { new: true });
         return res.status(200).send({ status: true, msg: "Deleted Successfully"}) // delete the book data and update the deletedAt
     } else {
-        return res.status(404).send({ status: false, msg: "this book is already deleted" })
+        return res.status(404).send({ status: false, msg: "this book has already been deleted" })
     }
 
 }
