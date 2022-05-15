@@ -15,7 +15,7 @@ const reviewSchema = new mongoose.Schema({
     },
     reviewedAt: {
         type :String,
-        default: new Date().toISOString(), 
+        required:true,
         trim: true  
     },
     rating: {

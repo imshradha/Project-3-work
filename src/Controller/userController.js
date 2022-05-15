@@ -9,7 +9,7 @@ const Register = async function (req, res) {
     try{
         let data = req.body
 
-        let {title, name, phone, email, password,pincode} = data
+        let {title, name, phone, email, password} = data
 
         /*----------------------------validations ----------------------------*/
         if(!Validator.isValidReqBody(data)){return res.status(400).send({status:false,msg:"Please provide user data"})}

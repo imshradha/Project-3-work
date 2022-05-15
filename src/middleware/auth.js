@@ -23,9 +23,7 @@ const Authentication = async function (req, res, next) {
                 }
                 req.userId = decoded.userId;
                 next();
-              }
-            }
-          );
+              }});
        
     }
     catch (err) {
