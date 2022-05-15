@@ -58,11 +58,11 @@ const Login =async function(req,res){
         /*----------------------------validations ----------------------------*/
         if(!Validator.isValidReqBody(data)){return res.status(400).send({status:false,msg:"Please provide user details"})}
        
-        if(!Validator.isValid(email)){ return res.status(400).send({status: false,message: "Email is Required"});}
-        if (!Validator.isValidEmail(email)) return res.status(400).send({ status: false, message: "Invalid email address"});
+        // if(!Validator.isValid(email)){ return res.status(400).send({status: false,message: "Email is Required"});}
+        // if (!Validator.isValidEmail(email)) return res.status(400).send({ status: false, message: "Invalid email address"});
           
-        if(!Validator.isValid(password)){return res.status(400).send({status: false,message: "Password is Required"});}
-        if(!Validator.isValidPassword(password)) return res.status(400).send({status: false,message: "Invalid password (length : 8-16) : Abcd@123456"});
+        // if(!Validator.isValid(password)){return res.status(400).send({status: false,message: "Password is Required"});}
+        // if(!Validator.isValidPassword(password)) return res.status(400).send({status: false,message: "Invalid password (length : 8-16) : Abcd@123456"});
 
        
         let logCheck = await userModel.findOne({email:email,password:password});

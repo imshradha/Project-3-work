@@ -10,7 +10,7 @@ const Authentication = async function (req, res, next) {
         // getting token from req(header)
         let token = req.headers["x-api-key"];
         if (!token) token = req.headers["X-Api-Key"];
-        if (!token) {return res.status(400).send({status:false, msg: "Enter x-api-key In Header" });}
+        if (!token) {return res.status(400).send({status:false, msg: "Not Authentiated! Please login for token " });}
         // token verification
        
         jwt.verify(token,"project3Group7",{ ignoreExpiration: true },function (err, decoded) {
@@ -61,8 +61,7 @@ const Authorization = async function (req, res, next) {
             // check the book id are present in db
             let book = await bookModel.findById(bookId);
             if (!book) { return res.status(404).send({status:false,msg:"book id not exists!!"}); }
-            //taking the user id in book model
-            let user = book.userId.toString() // the user id is convert to string and save to user variable
+            let user = book.userId.toString()
             //check the user id and decoded token in user id same or not 
             if (user != decoded) { return res.status(401).send({status:false,msg:"Not Authorised!!"})}
         }
