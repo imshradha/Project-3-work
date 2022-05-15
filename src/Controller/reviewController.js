@@ -2,6 +2,7 @@ const reviewModel = require("../Models/reviewModel");
 const bookModel = require("../Models/bookModel");
 const Validator = require("../Validator/valid");
 
+
 //create review function
 const createReview = async function(req, res) {
     try {
@@ -20,15 +21,14 @@ const createReview = async function(req, res) {
         //check req.body is empty or not
         if(Object.keys(data).length == 0){return res.status(400).send({status:false,msg:"No data provided!"})}
         //check reviewedBy Required!! 
-        if (reviewedBy === undefined) return res.status(400).send({ status: false, msg: "reviewedBy Required!!" });
-        if(!Validator.isValidString(reviewedBy)) return res.status(400).send({ status: false, msg: "reviewedBy shoulb be string!" })
-
+        if (reviewedBy === undefined) return res.status(400).send({ status: false, msg: "reviewedBy Required!!"});
+       
         if(!Validator.isValid(reviewedAt)) return res.status(400).send({status: false,message: "reviewedAt is Required"});
         if(!Validator.isValidDate(reviewedAt)) return res.status(400).send({status : false , message : "reviewedAt should be in YYYY-MM-DD format"})
 
         //check review is valid or not
         if(!Validator.isValid(review)) return res.status(400).send({status: false,message: "review is Required"});
-        if(!Validator.isValidString)  return res.status(400).send({status: false, message: "review shoulb be string"});
+        if(!Validator.isValidString(review))  return res.status(400).send({status: false, message: "review shoulb be string"});
 
         //check rating is valid or not
         if(!Validator.isValid(rating)) return res.status(400).send({status: false,message: "rating is Required"});
@@ -136,18 +136,12 @@ const deleteReviews = async function(req,res){
 
         return res.status(200).send({status : true , message : "success"})
         }
-
-
-
-        
     }
     catch(err){
         return res.status(500).send({message : err.message})
-    }
-    }
+    } }
 
-
-module.exports = { createReview,updateReviews,deleteReviews }
+module.exports = { createReview,updateReviews,deleteReviews}
 
 
 
