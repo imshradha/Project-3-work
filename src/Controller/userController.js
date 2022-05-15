@@ -9,7 +9,7 @@ const Register = async function (req, res) {
     try{
         let data = req.body
 
-        let {title, name, phone, email, password} = data
+        let {title, name, phone, email, password,pincode} = data
 
         /*----------------------------validations ----------------------------*/
         if(!Validator.isValidReqBody(data)){return res.status(400).send({status:false,msg:"Please provide user data"})}
@@ -18,10 +18,10 @@ const Register = async function (req, res) {
         if (!Validator.isValidTitle(title)) return res.status(400).send({ status: false, message: "Title must be : Mr/ Miss/ Mrs" })
         
         if(!Validator.isValid(name)) return res.status(400).send({status: false,message: "Name is Required"});
-        if(!Validator.isValidName(name)) return res.status(400).send({status: false, message: "Invalid name : Should contain alphabetic characters only"});
+        if(!Validator.isValidString(name)) return res.status(400).send({status: false, message: "Invalid name : Should contain alphabetic characters only"});
        
         if(!Validator.isValid(phone)) return res.status(400).send({status: false,message: "Phone is Required"});
-        if (!Validator.isValidPhone(phone))  return res.status(400).send({ status: false, message: "Invalid phone number : must contain 10 dig."});
+        if (!Validator.isValidPhone(phone))  return res.status(400).send({ status: false, message: "Invalid phone number : must contain 10 digit and only number."});
 
         //check unique phone
         const isPhoneUsed = await userModel.findOne({phone: phone });
@@ -36,6 +36,7 @@ const Register = async function (req, res) {
 
         if(!Validator.isValid(password)) return res.status(400).send({status: false,message: "Password is Required"});
         if (!Validator.isValidPassword(password)) return res.status(400).send({ status: false, message: "Invalid password (length : 8-16) : Abcd@123456"});
+        if(!/^[0-9]{6}$/.test(data.address.pincode)) return res.status(400).send({status: false,message: "Pincode  is not valid minlenght:-6"});
 
         /*-------------------create user ---------------------------------------------*/ 
         let savedData = await userModel.create(data);
@@ -61,7 +62,7 @@ const Login =async function(req,res){
         if (!Validator.isValidEmail(email)) return res.status(400).send({ status: false, message: "Invalid email address"});
           
         if(!Validator.isValid(password)){return res.status(400).send({status: false,message: "Password is Required"});}
-        if(!Validator.isValidPassword(password)) return res.status(400).send({status: false,message: "Password is Required Ex:-Abcdd@234567"});
+        if(!Validator.isValidPassword(password)) return res.status(400).send({status: false,message: "Invalid password (length : 8-16) : Abcd@123456"});
 
        
         let logCheck = await userModel.findOne({email:email,password:password});
@@ -76,7 +77,7 @@ const Login =async function(req,res){
 
         },"project3Group7",{expiresIn: "1200s" });
         res.setHeader("x-api-key", token);
-       return res.status(200).send({ status: true, message: "success", data: {token: token}})
+       return res.status(200).send({ status: true, message: "Login Successful",iat:new String(Date()),token: token})
     }
     catch(err){
         return res.status(500).send({status : false , message: err.message});

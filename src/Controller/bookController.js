@@ -26,7 +26,7 @@ const Book = async function (req, res){
 
         //check ISBN is valid or not
         if (!Validator.isValid(ISBN)) return res.status(400).send({ status: false, message: "ISBN is Required" });
-
+        if(!/^[0-9 -]{8,15}$/.test(ISBN)) return res.status(400).send({status: false,message: "ISBN is not valid"});
         let userIdCheck = await bookModel.findOne({ ISBN: ISBN })
         if (userIdCheck) return res.status(400).send({ status: false, message: " ISBN already exists , Enter unique value" })
       
@@ -146,9 +146,6 @@ const updateBook = async function (req, res) {
 const deleteBook = async function (req, res) {
     let bookid = req.params.bookId;
 
-    if (!Validator.isValid(bookid)) return res.status(400).send({ status: false, message: "book id is Required" });
-    if (!Validator.isValidObjectId(bookid)) return res.status(400).send({ status: false, message: "bookId is not valid" });
-   
     let bookDetails = await bookModel.findById(bookid)
     if (!bookDetails) { return res.status(404).send({ status: false, msg: "This book id are not exists" }) }
     //check the book data is deleted or not
