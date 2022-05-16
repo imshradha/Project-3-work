@@ -22,13 +22,16 @@ const createReview = async function(req, res) {
         if(Object.keys(data).length == 0){return res.status(400).send({status:false,msg:"No data provided!"})}
         //check reviewedBy Required!! 
         if (reviewedBy === undefined) return res.status(400).send({ status: false, msg: "reviewedBy Required!!"});
+        if (Object.values(reviewedBy).length > 0) {
+            if(!/^[   A-Za-z ]+$/.test(reviewedBy))  return res.status(400).send({ status: false, msg: "reviewedBy should be accept string!!"});
+        }
        
         if(!Validator.isValid(reviewedAt)) return res.status(400).send({status: false,message: "reviewedAt is Required"});
         if(!Validator.isValidDate(reviewedAt)) return res.status(400).send({status : false , message : "reviewedAt should be in YYYY-MM-DD format"})
 
         //check review is valid or not
         if(!Validator.isValid(review)) return res.status(400).send({status: false,message: "review is Required"});
-        if(!Validator.isValidString(review))  return res.status(400).send({status: false, message: "review shoulb be string"});
+        if(!Validator.isValidString(review))  return res.status(400).send({status: false, message: "review should be string"});
 
         //check rating is valid or not
         if(!Validator.isValid(rating)) return res.status(400).send({status: false,message: "rating is Required"});
