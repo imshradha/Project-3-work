@@ -11,7 +11,19 @@ mongoose.connect("mongodb+srv://shradha_24:Ourcloudy007@cluster0.tovfx.mongodb.n
     useNewUrlParser: true
 }).then(() => console.log("MongoDb is connected")).catch(err => console.log(err));
 
+
 app.use('/', route);
+
+app.all('*', function(req, res) {
+    throw new Error("Bad request")
+})
+
+app.use(function(e, req, res, next) {
+    if (e.message === "Bad request") {
+        res.status(400).json({error: {msg: e.message}});
+    }
+});
+
 
 app.listen(process.env.PORT || 4000, function () {
     console.log('Express app running on port ' + (process.env.PORT || 4000))
