@@ -20,7 +20,7 @@ app.all('*', function(req, res) {
 
 app.use(function(e, req, res, next) {
     if (e.message === "Bad request") {
-        res.status(400).json({error: {msg: e.message}});
+        res.status(400).send({status : false , error: e.message});
     }
 });
 
