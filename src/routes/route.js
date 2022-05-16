@@ -22,8 +22,8 @@ router.route('/books/:bookId')
 //review APIs
 router.post("/books/:bookId/review",reviewController.createReview)
 router.route('/books/:bookId/review/:reviewId')
-.put(Authentication,reviewController.updateReviews)
-.delete(Authentication,reviewController.deleteReviews)
+.put(reviewController.updateReviews)
+.delete(reviewController.deleteReviews)
 
 //export router
 module.exports = router;
